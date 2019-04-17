@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:9.6
+    env_file:
+        - ./envfiles/db.env
+    ports:
+      - "8090:5433"
+
+  api:
+    build:
+      context: ./
+      dockerfile: ./dockerfiles/api.Dockerfile
+    restart: always
+    env_file:
+      - ./envfiles/api.env
+    command: python main.py
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+

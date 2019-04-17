@@ -1,5 +1,6 @@
 from aiohttp import web
 from keywords.routes import setup_routes
+from keywords.db import init_db
 
 
 async def init_app():
@@ -7,6 +8,8 @@ async def init_app():
     app = web.Application()
 
     setup_routes(app)
+
+    db_pool = await init_db(app)
 
     return app
 

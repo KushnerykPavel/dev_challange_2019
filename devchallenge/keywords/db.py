@@ -1,11 +1,9 @@
-from datetime import datetime as dt
 import os
 import asyncpgsa
 from sqlalchemy import (
     MetaData, Table, Column, ForeignKey,
-    Integer, String, DateTime
+    Integer, String
 )
-from sqlalchemy.sql import select
 
 metadata = MetaData()
 
@@ -36,13 +34,31 @@ async def init_db(app):
 
 
 def construct_db_url():
-    DSN = "postgresql://{user}:{password}@{host}:{port}/{database}"
+    DSN = "postgresql://{user}:{password}@{host}/{database}"
     return DSN.format(
         user=os.environ['DB_USER'],
-        password=os.environ['DB_PASS'],
+        password=os.environ['DB_PASSWORD'],
         database=os.environ['DB_NAME'],
         host=os.environ['DB_HOST'],
-        port=os.environ['DB_PORT'],
     )
 
 
+async def set_url(conn, url):
+    url_ent = urls.insert().values(url=url)
+    rez = await conn.execute(url_ent)
+    t = keywords.insert().values(url_id=rez.inserted_primary_key[0], keyword='aa')
+    await conn.execute(t)
+
+async def get_urls(conn):
+    records = await conn.fetch(
+        urls.select().order_by(urls.c.id)
+    )
+
+    return records
+
+async def get_keywords(conn):
+    records = await conn.fetch(
+        urls.select().order_by(urls.c.id)
+    )
+    print(records)
+    return records
