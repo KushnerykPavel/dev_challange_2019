@@ -1,3 +1,5 @@
 venv
 example.py
 app
+.idea
+__pycache__/
